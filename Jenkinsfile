@@ -7,20 +7,26 @@ pipeline {
                 checkout scm
             }
         }
+ stage('Debug') {
+    steps {
+        sh 'hostname'
+        sh 'which flake8 || echo "not found"'
+    }
+}
 
         stage('Tests') {
             parallel {
                 stage('Backend — flake8') {
                     steps {
                         dir('backend') {
-                            sh 'pip install flake8 && flake8 .'
+                            sh 'flake8 .'
                         }
                     }
                 }
                 stage('Backend — pytest') {
                     steps {
                         dir('backend') {
-                            sh 'pip install -r requirements.txt && pytest'
+                            sh 'pip install -r requirements.txt --break-system-packages && pytest'
                         }
                     }
                 }
