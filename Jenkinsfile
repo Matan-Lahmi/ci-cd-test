@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'docker-agent' }
 
     stages {
         stage('Checkout') {
@@ -7,12 +7,6 @@ pipeline {
                 checkout scm
             }
         }
- stage('Debug') {
-    steps {
-        sh 'hostname'
-        sh 'which flake8 || echo "not found"'
-    }
-}
 
         stage('Tests') {
             parallel {
@@ -26,7 +20,7 @@ pipeline {
                 stage('Backend — pytest') {
                     steps {
                         dir('backend') {
-                            sh 'pip install -r requirements.txt --break-system-packages && python3 -m pytest'
+                            sh 'pip3 install -r requirements.txt --break-system-packages && python3 -m pytest'
                         }
                     }
                 }
@@ -46,27 +40,26 @@ pipeline {
             }
         }
 
-stage('Trivy Scan') {
-    steps {
-        sh 'trivy image --reset-db'
-    }
-}
+        stage('Trivy Reset') {
+            steps {
+                sh 'trivy image --reset-db'
+            }
+        }
 
-stage('Trivy Scan Images') {
-    parallel {
-        stage('Scan Backend') {
-            steps {
-                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
+        stage('Trivy Scan') {
+            parallel {
+                stage('Scan Backend') {
+                    steps {
+                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
+                    }
+                }
+                stage('Scan Frontend') {
+                    steps {
+                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+                    }
+                }
             }
         }
-        stage('Scan Frontend') {
-            steps {
-                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
-            }
-        }
-    }
-}
-}
 
         stage('Docker Push') {
             steps {
@@ -84,7 +77,7 @@ stage('Trivy Scan Images') {
 
     post {
         always {
-            sh 'docker-compose down'
+            sh 'docker-compose down || true'
             cleanWs()
         }
     }
