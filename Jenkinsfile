@@ -42,7 +42,7 @@ pipeline {
         
 stage('Trivy Reset') {
     steps {
-        sh 'trivy image --clear-cache'
+        sh 'trivy clean --scan-cache'
     }
 }
 
