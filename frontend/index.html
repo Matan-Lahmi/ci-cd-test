@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fullstack Demo</title>
+  <style>
+    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+    .card { background: white; padding: 2rem 3rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+    #status { font-size: 1.5rem; font-weight: bold; margin-top: 1rem; color: #333; }
+    .ok { color: #2ecc71; }
+    .error { color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Backend Health Check</h1>
+    <div id="status">Loading...</div>
+  </div>
+
+  <script>
+    fetch('/api/health')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var el = document.getElementById('status');
+        el.textContent = 'Status: ' + data.status;
+        el.className = data.status === 'ok' ? 'ok' : 'error';
+      })
+      .catch(function(err) {
+        var el = document.getElementById('status');
+        el.textContent = 'Error: ' + err.message;
+        el.className = 'error';
+      });
+  </script>
+</body>
+</html>
