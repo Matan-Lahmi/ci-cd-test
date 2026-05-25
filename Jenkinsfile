@@ -7,6 +7,12 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Debug') {
+    steps {
+        sh 'which flake8 || echo "not found"'
+        sh 'docker images | grep jenkins'
+    }
+}
 
         stage('Tests') {
             parallel {
