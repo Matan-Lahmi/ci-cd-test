@@ -19,7 +19,7 @@
   </div>
 
   <script>
-    fetch('/api/health')
+    fetch('http://213.199.50.250:8000/api/health')
       .then(function(res) { return res.json(); })
       .then(function(data) {
         var el = document.getElementById('status');
