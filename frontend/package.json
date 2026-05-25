@@ -2,7 +2,7 @@
   "name": "fullstack-frontend",
   "version": "1.0.0",
   "description": "Static frontend for fullstack demo",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "lint": "eslint ."
   },
