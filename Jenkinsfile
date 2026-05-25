@@ -47,10 +47,15 @@ pipeline {
         }
 
 stage('Trivy Scan') {
+    steps {
+        sh 'trivy image --reset-db'
+    }
+}
+
+stage('Trivy Scan Images') {
     parallel {
         stage('Scan Backend') {
             steps {
-                sh 'trivy image --reset-db'
                 sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
@@ -60,6 +65,7 @@ stage('Trivy Scan') {
             }
         }
     }
+}
 }
 
         stage('Docker Push') {
