@@ -49,12 +49,12 @@ stage('Trivy Scan') {
     parallel {
         stage('Scan Backend') {
             steps {
-                sh 'trivy image --cache-dir /tmp/trivy-backend --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
+                sh 'trivy image --cache-dir /tmp/trivy-backend --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
         stage('Scan Frontend') {
             steps {
-                sh 'trivy image --cache-dir /tmp/trivy-frontend --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+                sh 'trivy image --cache-dir /tmp/trivy-frontend --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
             }
         }
     }
