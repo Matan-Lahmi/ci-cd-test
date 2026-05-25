@@ -1,6 +1,5 @@
 pipeline {
     agent { label 'docker-agent' }
-
     stages {
         stage('Checkout') {
             steps {
@@ -39,27 +38,27 @@ pipeline {
                 sh 'docker-compose build'
             }
         }
-        
-stage('Trivy Download DB') {
-    steps {
-        sh 'trivy image --download-db-only'
-    }
-}
 
-stage('Trivy Scan') {
-    parallel {
-        stage('Scan Backend') {
+        stage('Trivy Download DB') {
             steps {
-                sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
+                sh 'trivy image --download-db-only'
             }
         }
-        stage('Scan Frontend') {
-            steps {
-                sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+
+        stage('Trivy Scan') {
+            parallel {
+                stage('Scan Backend') {
+                    steps {
+                        sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
+                    }
+                }
+                stage('Scan Frontend') {
+                    steps {
+                        sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Docker Push') {
             steps {
@@ -73,16 +72,16 @@ stage('Trivy Scan') {
                 }
             }
         }
-    }
-    stage('Deploy') {
-    steps {
-        sh '''
-            docker-compose pull
-            docker-compose up -d
-        '''
-    }
-}
 
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker-compose pull
+                    docker-compose up -d
+                '''
+            }
+        }
+    }
 
     post {
         always {
