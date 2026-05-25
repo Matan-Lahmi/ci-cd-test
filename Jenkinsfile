@@ -40,26 +40,26 @@ pipeline {
             }
         }
         
-stage('Trivy Reset') {
+stage('Trivy Download DB') {
     steps {
-        sh 'trivy clean --scan-cache'
+        sh 'trivy image --download-db-only'
     }
 }
 
-        stage('Trivy Scan') {
-            parallel {
-                stage('Scan Backend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
-                    }
-                }
-                stage('Scan Frontend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
-                    }
-                }
+stage('Trivy Scan') {
+    parallel {
+        stage('Scan Backend') {
+            steps {
+                sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
+        stage('Scan Frontend') {
+            steps {
+                sh 'trivy image --skip-db-update --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+            }
+        }
+    }
+}
 
         stage('Docker Push') {
             steps {
