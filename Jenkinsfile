@@ -39,12 +39,12 @@ pipeline {
                 sh 'docker-compose build'
             }
         }
-
-        stage('Trivy Reset') {
-            steps {
-                sh 'trivy image --reset-db'
-            }
-        }
+        
+stage('Trivy Reset') {
+    steps {
+        sh 'trivy image --clear-cache'
+    }
+}
 
         stage('Trivy Scan') {
             parallel {
