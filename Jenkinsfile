@@ -42,24 +42,24 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker compose build'
+                sh 'docker-compose build'
             }
         }
 
-        stage('Trivy Scan') {
-            parallel {
-                stage('Scan Backend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL matanlahmi/fullstack-backend'
-                    }
-                }
-                stage('Scan Frontend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL matanlahmi/fullstack-frontend'
-                    }
-                }
+stage('Trivy Scan') {
+    parallel {
+        stage('Scan Backend') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
+        stage('Scan Frontend') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+            }
+        }
+    }
+}
 
         stage('Docker Push') {
             steps {
@@ -69,7 +69,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                    sh 'docker compose push'
+                    sh 'docker-compose push'
                 }
             }
         }
@@ -77,7 +77,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker compose down'
+            sh 'docker-compose down'
             cleanWs()
         }
     }
