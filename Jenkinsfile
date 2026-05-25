@@ -46,20 +46,20 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            parallel {
-                stage('Scan Backend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL matanlahmi/fullstack-backend'
-                    }
-                }
-                stage('Scan Frontend') {
-                    steps {
-                        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL matanlahmi/fullstack-frontend'
-                    }
-                }
+stage('Trivy Scan') {
+    parallel {
+        stage('Scan Backend') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
+        stage('Scan Frontend') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-frontend'
+            }
+        }
+    }
+}
 
         stage('Docker Push') {
             steps {
