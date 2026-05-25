@@ -26,7 +26,7 @@ pipeline {
                 stage('Backend — pytest') {
                     steps {
                         dir('backend') {
-                            sh 'pip install -r requirements.txt && pytest'
+                            sh 'pip install -r requirements.txt --break-system-packages && pytest'
                         }
                     }
                 }
