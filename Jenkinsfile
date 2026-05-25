@@ -9,8 +9,9 @@ pipeline {
         }
         stage('Debug') {
     steps {
-        sh 'which flake8 || echo "not found"'
-        sh 'docker images | grep jenkins'
+        sh 'whoami'
+        sh 'echo $PATH'
+        sh 'ls /usr/local/bin/flake8'
     }
 }
 
