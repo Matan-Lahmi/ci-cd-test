@@ -7,11 +7,10 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Debug') {
+ stage('Debug') {
     steps {
-        sh 'whoami'
-        sh 'echo $PATH'
-        sh 'ls /usr/local/bin/flake8'
+        sh 'hostname'
+        sh 'which flake8 || echo "not found"'
     }
 }
 
