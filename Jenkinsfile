@@ -13,7 +13,7 @@ pipeline {
                 stage('Backend — flake8') {
                     steps {
                         dir('backend') {
-                            sh 'pip install flake8 && flake8 .'
+                            sh 'flake8 .'
                         }
                     }
                 }
