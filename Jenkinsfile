@@ -50,6 +50,7 @@ stage('Trivy Scan') {
     parallel {
         stage('Scan Backend') {
             steps {
+                sh 'trivy image --reset-db'
                 sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed matanlahmi/fullstack-backend'
             }
         }
